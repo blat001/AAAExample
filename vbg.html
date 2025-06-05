@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verizon Business Group - AI Campaign Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #e60000 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .workfront-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .workfront-logo {
+            width: 24px;
+            height: 24px;
+            background: #FF6B35;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #e60000 0%, #ff4444 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .campaign-brief {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #e60000;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #e60000 0%, #cc0000 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(230, 0, 0, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(230, 0, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            box-shadow: 0 2px 10px rgba(107, 114, 128, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 4px 20px rgba(107, 114, 128, 0.4);
+        }
+
+        .agent-thinking {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .thinking-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #3b82f6;
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .scenarios-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-left: 4px solid #e60000;
+            transition: transform 0.3s;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .confidence-score {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .scenario-details {
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: #6b7280;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .audience-criteria {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .criteria-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .criteria-list {
+            font-size: 0.85rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .select-scenario {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .select-scenario:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e60000, #3b82f6);
+            width: 0%;
+            transition: width 0.3s;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+
+        .scenario-detail-view {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .detail-section h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-card {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e60000;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+
+        .creation-process {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .process-step.active {
+            border-left-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .process-step.completed {
+            border-left-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .step-icon.pending {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .step-icon.active {
+            background: #3b82f6;
+        }
+
+        .step-icon.completed {
+            background: #10b981;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-description {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .system-logs {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeInLog 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeInLog {
+            to { opacity: 1; }
+        }
+
+        .summary-page {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .time-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .time-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .time-card.old {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #f87171;
+        }
+
+        .time-card.new {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #34d399;
+        }
+
+        .time-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .time-card.old .time-number {
+            color: #dc2626;
+        }
+
+        .time-card.new .time-number {
+            color: #059669;
+        }
+
+        .time-savings {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .savings-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #7c3aed;
+            margin-bottom: 0.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">VZ</div>
+                <div>
+                    <div class="logo-text">Verizon Business Group</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">AI Campaign Agent</div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <div class="workfront-badge">
+                    <div class="workfront-logo">Wf</div>
+                    <span>Powered by Adobe Workfront</span>
+                </div>
+                <div style="font-size: 0.9rem; opacity: 0.8;">
+                    Campaign time: 105 days → 50 days
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="campaign-brief" id="briefForm">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937;">Campaign Brief</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="product">Business Solution</label>
+                    <select id="product">
+                        <option value="">Select Solution</option>
+                        <option value="5g-business">5G Business Solutions</option>
+                        <option value="cloud-services">Cloud & IT Services</option>
+                        <option value="cybersecurity">Cybersecurity Solutions</option>
+                        <option value="iot-solutions">IoT & Connected Solutions</option>
+                        <option value="unified-communications">Unified Communications</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="campaign-type">Campaign Type</label>
+                    <select id="campaign-type">
+                        <option value="">Select Type</option>
+                        <option value="lead-generation">Lead Generation</option>
+                        <option value="customer-retention">Customer Retention</option>
+                        <option value="upsell-crosssell">Upsell/Cross-sell</option>
+                        <option value="contract-renewal">Contract Renewal</option>
+                        <option value="competitive-displacement">Competitive Displacement</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="budget">Campaign Budget</label>
+                    <input type="text" id="budget" placeholder="e.g., $750,000">
+                </div>
+                <div class="form-group">
+                    <label for="target-audience-size">Target Audience Size</label>
+                    <input type="text" id="target-audience-size" placeholder="e.g., 50,000">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="objectives">Campaign Objectives</label>
+                <textarea id="objectives" rows="3" placeholder="Describe your campaign goals and success metrics..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="channels">Preferred Channels</label>
+                    <select id="channels" multiple>
+                        <option value="email">Email Marketing</option>
+                        <option value="linkedin">LinkedIn Advertising</option>
+                        <option value="display-ads">Display Advertising</option>
+                        <option value="direct-mail">Direct Mail</option>
+                        <option value="webinars">Webinars & Events</option>
+                        <option value="content-syndication">Content Syndication</option>
+                        <option value="account-based">Account-Based Marketing</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="timeline">Launch Timeline</label>
+                    <input type="date" id="timeline">
+                </div>
+            </div>
+
+            <button class="btn" onclick="generateScenarios()">Generate AI Scenarios</button>
+        </div>
+
+        <div class="agent-thinking" id="thinkingSection">
+            <div class="thinking-header">
+                <div class="ai-avatar">AI</div>
+                <div>
+                    <h3>Campaign Agent is analyzing your brief...</h3>
+                    <div class="thinking-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="thinkingText">Analyzing B2B customer data and engagement patterns...</div>
+        </div>
+
+        <div id="scenariosContainer">
+            <div class="scenarios-grid" id="scenariosGrid">
+                <!-- Scenarios will be populated here -->
+            </div>
+        </div>
+
+        <div class="scenario-detail-view" id="scenarioDetail">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937;" id="detailTitle">Scenario Details</h2>
+            
+            <div class="metrics-grid" id="metricsGrid">
+                <!-- Metrics will be populated here -->
+            </div>
+
+            <div class="detail-section">
+                <h3>Audience Targeting Strategy</h3>
+                <div id="targetingStrategy"></div>
+            </div>
+
+            <div class="detail-section">
+                <h3>Channel Optimization</h3>
+                <div id="channelStrategy"></div>
+            </div>
+
+            <div class="detail-section">
+                <h3>Expected Outcomes</h3>
+                <div id="expectedOutcomes"></div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="backToScenarios()">Back to Scenarios</button>
+                <button class="btn" onclick="createCampaign()">Create This Campaign</button>
+            </div>
+        </div>
+
+        <div class="creation-process" id="creationProcess">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937;">Creating Your Campaign</h2>
+            
+            <div class="process-step" id="step1">
+                <div class="step-icon pending">1</div>
+                <div class="step-content">
+                    <div class="step-title">Marketo Campaign Setup</div>
+                    <div class="step-description">Creating multi-channel workflows and engagement programs</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step2">
+                <div class="step-icon pending">2</div>
+                <div class="step-content">
+                    <div class="step-title">Audience Segmentation</div>
+                    <div class="step-description">Building account-based segments and lead scoring</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step3">
+                <div class="step-icon pending">3</div>
+                <div class="step-content">
+                    <div class="step-title">Workfront Project Configuration</div>
+                    <div class="step-description">Setting up omnichannel workflows and approvals</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step4">
+                <div class="step-icon pending">4</div>
+                <div class="step-content">
+                    <div class="step-title">Channel Integration</div>
+                    <div class="step-description">Connecting email, LinkedIn, display, and content systems</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step5">
+                <div class="step-icon pending">5</div>
+                <div class="step-content">
+                    <div class="step-title">Campaign Launch</div>
+                    <div class="step-description">Activating campaigns and enabling performance tracking</div>
+                </div>
+            </div>
+
+            <div class="system-logs" id="systemLogs">
+                <div class="log-entry">[INFO] Campaign creation process initiated...</div>
+            </div>
+        </div>
+
+        <div class="summary-page" id="summaryPage">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937; text-align: center;">Campaign Created Successfully! 🎉</h2>
+            
+            <div class="time-comparison">
+                <div class="time-card old">
+                    <div class="time-number">105</div>
+                    <div>Days (Traditional Process)</div>
+                    <div style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                        Manual workflows, Excel planning, disconnected systems
+                    </div>
+                </div>
+                <div class="time-card new">
+                    <div class="time-number">50</div>
+                    <div>Days (AI-Powered Process)</div>
+                    <div style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                        Automated workflows, AI targeting, integrated omnichannel
+                    </div>
+                </div>
+            </div>
+
+            <div class="time-savings">
+                <div class="savings-number">52%</div>
+                <div style="font-size: 1.2rem; font-weight: 600;">Time Savings Achieved</div>
+                <div style="font-size: 1rem; margin-top: 0.5rem;">55 days faster campaign deployment</div>
+            </div>
+
+            <div class="detail-section">
+                <h3>What Was Automated</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
+                        <strong>Marketo Engagement</strong><br>
+                        ✓ Multi-channel campaigns created<br>
+                        ✓ Lead scoring & nurturing flows<br>
+                        ✓ Account-based orchestration
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
+                        <strong>Channel Integration</strong><br>
+                        ✓ LinkedIn campaign sync<br>
+                        ✓ Display advertising setup<br>
+                        ✓ Email automation activated
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
+                        <strong>Performance Tracking</strong><br>
+                        ✓ Attribution modeling enabled<br>
+                        ✓ ROI dashboards configured<br>
+                        ✓ Real-time reporting active
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="startOver()">Create Another Campaign</button>
+                <button class="btn" onclick="viewCampaign()">View Campaign Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                title: "Enterprise 5G Migration",
+                confidence: 94,
+                audience: "IT Decision Makers, Fortune 1000",
+                size: "12,500",
+                channels: "LinkedIn + Email + ABM",
+                budget: "$850,000",
+                expectedROI: "4.2x",
+                criteria: "Enterprise companies 1000+ employees, Current 4G/LTE infrastructure, IT budget $5M+, Digital transformation initiatives, Manufacturing/Healthcare focus",
+                targeting: "Target CIOs and IT Directors at large enterprises actively pursuing digital transformation and 5G network upgrades. Focus on companies with existing Verizon relationships and high-bandwidth requirements.",
+                channelStrategy: "Account-based LinkedIn campaigns targeting key decision makers, personalized email sequences with 5G ROI calculators, executive webinars on 5G business transformation, and direct sales integration.",
+                outcomes: "Expected 8.5% email open rate, 2.3% LinkedIn engagement, 12% webinar attendance. Projected 45 qualified enterprise leads, average deal size $2.8M, 18-month sales cycle."
+            },
+            {
+                title: "SMB Cloud Migration",
+                confidence: 89,
+                audience: "Small-Medium Business IT Managers",
+                size: "45,000",
+                channels: "Email + Display + Content",
+                budget: "$420,000",
+                expectedROI: "3.1x",
+                criteria: "Companies 50-500 employees, On-premise IT infrastructure, Cloud migration planning, Annual IT spend $100K-$1M, Growth-stage businesses",
+                targeting: "Reach IT managers and business owners at growing companies evaluating cloud migration strategies. Focus on businesses with aging infrastructure and scalability challenges.",
+                channelStrategy: "Educational email campaigns on cloud benefits, display advertising on business publications, content syndication through industry partners, and solution-specific landing pages.",
+                outcomes: "Expected 22% email open rate, 1.8% display CTR, 850 content downloads. Projected 180 qualified leads, average deal size $85K, 6-month sales cycle."
+            },
+            {
+                title: "Cybersecurity Urgency",
+                confidence: 92,
+                audience: "Security Leaders, Recent Breach Targets",
+                size: "8,200",
+                channels: "LinkedIn + Email + Webinars",
+                budget: "$680,000",
+                expectedROI: "3.8x",
+                criteria: "Companies with recent security incidents, CISO/Security Director roles, Industries: Financial, Healthcare, Government, Compliance requirements",
+                targeting: "Target security decision makers at organizations that have experienced recent threats or are in high-risk industries requiring robust cybersecurity solutions.",
+                channelStrategy: "Urgent-tone LinkedIn messaging, threat intelligence email alerts, exclusive security briefing webinars, and rapid response consultation offers.",
+                outcomes: "Expected 15% LinkedIn response rate, 35% webinar attendance, 45% email engagement. Projected 85 qualified leads, average deal size $450K, 4-month accelerated cycle."
+            },
+            {
+                title: "IoT Manufacturing Solutions",
+                confidence: 87,
+                audience: "Manufacturing Operations Leaders",
+                size: "18,500",
+                channels: "Display + Email + Trade Shows",
+                budget: "$520,000",
+                expectedROI: "3.4x",
+                criteria: "Manufacturing companies, Operations/Plant managers, Industry 4.0 initiatives, Connected device deployments, Efficiency improvement goals",
+                targeting: "Focus on manufacturing operations leaders implementing Industry 4.0 strategies and seeking IoT connectivity solutions for operational efficiency.",
+                channelStrategy: "Industry publication display ads, IoT case study email campaigns, manufacturing trade show presence, and plant efficiency assessment tools.",
+                outcomes: "Expected 2.1% display engagement, 18% email open rate, 65% trade show booth visits. Projected 220 qualified leads, average deal size $180K, 8-month sales cycle."
+            },
+            {
+                title: "Unified Communications Upgrade",
+                confidence: 85,
+                audience: "IT & HR Leaders, Hybrid Workforce",
+                size: "35,000",
+                channels: "Email + LinkedIn + Content",
+                budget: "$390,000",
+                expectedROI: "2.9x",
+                criteria: "Companies with remote/hybrid workforce, Outdated communication systems, HR and IT collaboration, Employee experience focus, 200+ employees",
+                targeting: "Target IT and HR leaders at companies with hybrid workforces seeking to upgrade communication and collaboration infrastructure for employee productivity.",
+                channelStrategy: "Workforce productivity email campaigns, LinkedIn targeting of IT and HR professionals, collaboration solution content, and employee experience assessments.",
+                outcomes: "Expected 24% email engagement, 3.2% LinkedIn response, 420 content downloads. Projected 155 qualified leads, average deal size $65K, 5-month sales cycle."
+            },
+            {
+                title: "Competitive AT&T Displacement",
+                confidence: 81,
+                audience: "AT&T Business Customers",
+                size: "28,000",
+                channels: "Email + Display + Direct Mail",
+                budget: "$580,000",
+                expectedROI: "3.6x",
+                criteria: "Current AT&T business customers, Contract renewal periods, Service satisfaction issues, Network performance complaints, Budget pressures",
+                targeting: "Strategic displacement of AT&T business customers during renewal periods, focusing on companies experiencing service issues or seeking better value propositions.",
+                channelStrategy: "Competitive comparison email campaigns, targeted display advertising, premium direct mail packages, and switch incentive programs with dedicated migration support.",
+                outcomes: "Expected 16% email open rate, 1.4% display CTR, 3.2% direct mail response. Projected 95 qualified opportunities, average deal size $220K, 12-month competitive cycle."
+            },
+            {
+                title: "Federal Government Solutions",
+                confidence: 90,
+                audience: "Government IT Procurement",
+                size: "2,800",
+                channels: "Email + Events + Direct Outreach",
+                budget: "$750,000",
+                expectedROI: "4.5x",
+                criteria: "Federal agencies, Government IT procurement officers, FedRAMP requirements, Cybersecurity clearances, Long-term contract opportunities",
+                targeting: "Highly targeted approach to federal government IT procurement professionals and agency decision makers with specific compliance and security requirements.",
+                channelStrategy: "Government-specific email communications, federal IT conference presence, direct relationship building, and compliance-focused solution demonstrations.",
+                outcomes: "Expected 45% email engagement, 85% event attendance, 25% meeting conversion. Projected 25 qualified opportunities, average deal size $1.8M, 24-month government procurement cycle."
+            },
+            {
+                title: "Healthcare Digital Transformation",
+                confidence: 88,
+                audience: "Healthcare IT Directors",
+                size: "15,200",
+                channels: "LinkedIn + Email + Webinars",
+                budget: "$610,000",
+                expectedROI: "3.3x",
+                criteria: "Healthcare organizations, CIO/IT Director roles, HIPAA compliance needs, Telemedicine expansion, Patient experience initiatives",
+                targeting: "Healthcare IT leaders managing digital transformation initiatives, telemedicine implementations, and patient connectivity solutions requiring secure, compliant infrastructure.",
+                channelStrategy: "Healthcare-focused LinkedIn campaigns, compliance-oriented email content, medical industry webinars, and HIPAA-compliant solution showcases.",
+                outcomes: "Expected 12% LinkedIn engagement, 28% email open rate, 40% webinar attendance. Projected 125 qualified leads, average deal size $320K, 10-month healthcare procurement cycle."
+            },
+            {
+                title: "Retail Omnichannel Connectivity",
+                confidence: 83,
+                audience: "Retail Operations & IT Leaders",
+                size: "22,000",
+                channels: "Display + Email + Content",
+                budget: "$480,000",
+                expectedROI: "2.8x",
+                criteria: "Retail chains, Omnichannel strategies, POS system upgrades, Customer experience focus, Store connectivity needs",
+                targeting: "Retail operations and IT leaders implementing omnichannel customer experiences requiring robust connectivity solutions for seamless shopping experiences.",
+                channelStrategy: "Retail publication display advertising, omnichannel strategy email campaigns, customer experience content syndication, and retail technology assessments.",
+                outcomes: "Expected 1.9% display CTR, 21% email engagement, 380 content downloads. Projected 165 qualified leads, average deal size $125K, 7-month retail decision cycle."
+            },
+            {
+                title: "Existing Customer Expansion",
+                confidence: 95,
+                audience: "Current Verizon Business Customers",
+                size: "18,000",
+                channels: "Email + Account Management + Events",
+                budget: "$320,000",
+                expectedROI: "5.2x",
+                criteria: "Existing Verizon customers, Single-service relationships, High satisfaction scores, Growth indicators, Expansion opportunities identified",
+                targeting: "Leverage existing customer relationships and satisfaction to expand services, focusing on high-value accounts with identified growth opportunities and additional service needs.",
+                channelStrategy: "Personalized customer email campaigns, dedicated account manager outreach, exclusive customer events, and loyalty program integration with expansion incentives.",
+                outcomes: "Expected 42% email engagement, 65% account manager meeting rate, 80% event attendance. Projected 240 expansion opportunities, average expansion value $95K, 3-month existing customer cycle."
+            }
+        ];
+
+        let currentScenario = null;
+
+        function generateScenarios() {
+            document.getElementById('briefForm').style.display = 'none';
+            document.getElementById('thinkingSection').style.display = 'block';
+            
+            const progressFill = document.getElementById('progressFill');
+            const thinkingText = document.getElementById('thinkingText');
+            
+            const messages = [
+                "Analyzing B2B customer data and engagement patterns...",
+                "Processing account-based marketing segments...",
+                "Evaluating multi-channel performance and attribution...",
+                "Generating personalized business scenarios...",
+                "Calculating pipeline and revenue projections...",
+                "Finalizing omnichannel campaign recommendations..."
+            ];
+            
+            let progress = 0;
+            let messageIndex = 0;
+            
+            const interval = setInterval(() => {
+                progress += 16.67;
+                progressFill.style.width = progress + '%';
+                
+                if (messageIndex < messages.length) {
+                    thinkingText.textContent = messages[messageIndex];
+                    messageIndex++;
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('thinkingSection').style.display = 'none';
+                        displayScenarios();
+                    }, 1000);
+                }
+            }, 800);
+        }
+
+        function displayScenarios() {
+            const grid = document.getElementById('scenariosGrid');
+            grid.innerHTML = '';
+            
+            scenarios.forEach((scenario, index) => {
+                const card = createScenarioCard(scenario, index);
+                grid.appendChild(card);
+            });
+            
+            grid.style.display = 'grid';
+            grid.classList.add('fade-in');
+        }
+
+        function createScenarioCard(scenario, index) {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+                <div class="scenario-header">
+                    <div class="scenario-title">${scenario.title}</div>
+                    <div class="confidence-score">${scenario.confidence}% Confidence</div>
+                </div>
+                
+                <div class="scenario-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Target Size:</span>
+                        <span class="detail-value">${scenario.size}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Budget:</span>
+                        <span class="detail-value">${scenario.budget}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Channels:</span>
+                        <span class="detail-value">${scenario.channels}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Expected ROI:</span>
+                        <span class="detail-value">${scenario.expectedROI}</span>
+                    </div>
+                </div>
+                
+                <div class="audience-criteria">
+                    <div class="criteria-title">Audience Criteria:</div>
+                    <div class="criteria-list">${scenario.criteria}</div>
+                </div>
+                
+                <button class="select-scenario" onclick="selectScenario(${index})">
+                    View Details & Select
+                </button>
+            `;
+            
+            return card;
+        }
+
+        function selectScenario(index) {
+            currentScenario = scenarios[index];
+            document.getElementById('scenariosContainer').style.display = 'none';
+            showScenarioDetail();
+        }
+
+        function showScenarioDetail() {
+            const detailView = document.getElementById('scenarioDetail');
+            const scenario = currentScenario;
+            
+            document.getElementById('detailTitle').textContent = scenario.title;
+            
+            // Populate metrics
+            const metricsGrid = document.getElementById('metricsGrid');
+            metricsGrid.innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.size}</div>
+                    <div class="metric-label">Target Accounts</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.budget}</div>
+                    <div class="metric-label">Campaign Budget</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.expectedROI}</div>
+                    <div class="metric-label">Expected ROI</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.confidence}%</div>
+                    <div class="metric-label">AI Confidence</div>
+                </div>
+            `;
+            
+            document.getElementById('targetingStrategy').innerHTML = `<p>${scenario.targeting}</p>`;
+            document.getElementById('channelStrategy').innerHTML = `<p>${scenario.channelStrategy}</p>`;
+            document.getElementById('expectedOutcomes').innerHTML = `<p>${scenario.outcomes}</p>`;
+            
+            detailView.style.display = 'block';
+            detailView.classList.add('fade-in');
+        }
+
+        function backToScenarios() {
+            document.getElementById('scenarioDetail').style.display = 'none';
+            document.getElementById('scenariosContainer').style.display = 'block';
+        }
+
+        function createCampaign() {
+            document.getElementById('scenarioDetail').style.display = 'none';
+            document.getElementById('creationProcess').style.display = 'block';
+            
+            startCampaignCreation();
+        }
+
+        function startCampaignCreation() {
+            const steps = [
+                {
+                    logs: [
+                        "[INFO] Connecting to Marketo Marketing Automation...",
+                        "[INFO] Creating engagement campaign: VZ_BIZ_" + currentScenario.title.replace(/\s+/g, '_').toUpperCase(),
+                        "[INFO] Configuring multi-channel touchpoint flows...",
+                        "[INFO] Setting up lead scoring and nurturing programs...",
+                        "[SUCCESS] Marketo campaign structure created"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Accessing Verizon customer data warehouse...",
+                        "[INFO] Building account-based segmentation queries...",
+                        "[INFO] Processing " + currentScenario.size + " business accounts...",
+                        "[INFO] Applying firmographic and technographic filters...",
+                        "[INFO] Integrating with Salesforce opportunity data...",
+                        "[SUCCESS] Target audience segments created and scored"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Initializing Workfront campaign project...",
+                        "[INFO] Applying B2B omnichannel campaign template...",
+                        "[INFO] Setting up creative review and approval workflows...",
+                        "[INFO] Configuring channel-specific milestone tracking...",
+                        "[INFO] Establishing campaign performance dashboards...",
+                        "[SUCCESS] Workfront project orchestration configured"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Integrating LinkedIn Campaign Manager API...",
+                        "[INFO] Connecting display advertising platforms...",
+                        "[INFO] Synchronizing email marketing systems...",
+                        "[INFO] Setting up webinar and event automation...",
+                        "[INFO] Configuring cross-channel attribution tracking...",
+                        "[SUCCESS] All marketing channels integrated and synced"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Activating Marketo engagement campaigns...",
+                        "[INFO] Launching LinkedIn sponsored content...",
+                        "[INFO] Deploying programmatic display advertising...",
+                        "[INFO] Initiating email nurturing sequences...",
+                        "[INFO] Enabling real-time performance monitoring...",
+                        "[SUCCESS] Multi-channel campaign launched successfully!"
+                    ]
+                }
+            ];
+
+            let currentStep = 0;
+            const logsContainer = document.getElementById('systemLogs');
+
+            function processStep() {
+                if (currentStep >= steps.length) {
+                    setTimeout(() => {
+                        document.getElementById('creationProcess').style.display = 'none';
+                        showSummary();
+                    }, 2000);
+                    return;
+                }
+
+                // Update step status
+                const stepElement = document.getElementById(`step${currentStep + 1}`);
+                const stepIcon = stepElement.querySelector('.step-icon');
+                stepElement.classList.add('active');
+                stepIcon.classList.remove('pending');
+                stepIcon.classList.add('active');
+
+                // Add logs for current step
+                const stepLogs = steps[currentStep].logs;
+                let logIndex = 0;
+
+                function addLog() {
+                    if (logIndex < stepLogs.length) {
+                        const logEntry = document.createElement('div');
+                        logEntry.className = 'log-entry';
+                        logEntry.textContent = stepLogs[logIndex];
+                        logsContainer.appendChild(logEntry);
+                        logsContainer.scrollTop = logsContainer.scrollHeight;
+                        logIndex++;
+                        setTimeout(addLog, 800);
+                    } else {
+                        // Mark step as completed
+                        stepElement.classList.remove('active');
+                        stepElement.classList.add('completed');
+                        stepIcon.classList.remove('active');
+                        stepIcon.classList.add('completed');
+                        stepIcon.textContent = '✓';
+                        
+                        currentStep++;
+                        setTimeout(processStep, 1000);
+                    }
+                }
+                addLog();
+            }
+
+            processStep();
+        }
+
+        function showSummary() {
+            document.getElementById('summaryPage').style.display = 'block';
+            document.getElementById('summaryPage').classList.add('fade-in');
+        }
+
+        function startOver() {
+            // Reset all sections
+            document.getElementById('summaryPage').style.display = 'none';
+            document.getElementById('creationProcess').style.display = 'none';
+            document.getElementById('scenarioDetail').style.display = 'none';
+            document.getElementById('scenariosContainer').style.display = 'none';
+            document.getElementById('thinkingSection').style.display = 'none';
+            document.getElementById('briefForm').style.display = 'block';
+            
+            // Reset process steps
+            for (let i = 1; i <= 5; i++) {
+                const step = document.getElementById(`step${i}`);
+                const icon = step.querySelector('.step-icon');
+                step.className = 'process-step';
+                icon.className = 'step-icon pending';
+                icon.textContent = i;
+            }
+            
+            // Clear logs
+            document.getElementById('systemLogs').innerHTML = '<div class="log-entry">[INFO] Campaign creation process initiated...</div>';
+            
+            currentScenario = null;
+        }
+
+        function viewCampaign() {
+            alert('B2B Campaign Dashboard will show:\n\n• Real-time lead scoring and progression\n• Multi-channel engagement tracking\n• Account-based marketing performance\n• Pipeline attribution analysis\n• LinkedIn and display ad optimization\n• Email nurturing effectiveness\n\nAll channels integrated and actively engaging prospects!');
+        }
+
+        // Initialize form with default values for demo
+        window.onload = function() {
+            document.getElementById('product').value = '5g-business';
+            document.getElementById('campaign-type').value = 'lead-generation';
+            document.getElementById('budget').value = '$750,000';
+            document.getElementById('target-audience-size').value = '50,000';
+            document.getElementById('objectives').value = 'Generate 200 qualified enterprise leads for 5G business solutions while maintaining a minimum 3.5:1 ROI across all digital channels';
+            
+            // Set multiple channel selection
+            const channelsSelect = document.getElementById('channels');
+            channelsSelect.value = 'email';
+            
+            const today = new Date();
+            today.setDate(today.getDate() + 30);
+            document.getElementById('timeline').value = today.toISOString().split('T')[0];
+        };
+    </script>
+</body>
+</html>
