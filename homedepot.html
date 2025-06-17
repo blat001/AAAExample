@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Home Depot - AI Campaign Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f96302 0%, #d45500 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .workfront-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .workfront-logo {
+            width: 24px;
+            height: 24px;
+            background: #FF6B35;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+            color: white;
+        }
+
+        .logo-circle {
+            width: 50px;
+            height: 50px;
+            background: #f96302;
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .campaign-brief {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #f96302;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f96302 0%, #d45500 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(249, 99, 2, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(249, 99, 2, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            box-shadow: 0 2px 10px rgba(107, 114, 128, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 4px 20px rgba(107, 114, 128, 0.4);
+        }
+
+        .agent-thinking {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .thinking-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #3b82f6;
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .scenarios-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-left: 4px solid #f96302;
+            transition: transform 0.3s;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .confidence-score {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .scenario-details {
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: #6b7280;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .audience-criteria {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .criteria-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .criteria-list {
+            font-size: 0.85rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .select-scenario {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .select-scenario:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f96302, #3b82f6);
+            width: 0%;
+            transition: width 0.3s;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+
+        .scenario-detail-view {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .detail-section h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-card {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f96302;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+
+        .creation-process {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .process-step.active {
+            border-left-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .process-step.completed {
+            border-left-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .step-icon.pending {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .step-icon.active {
+            background: #3b82f6;
+        }
+
+        .step-icon.completed {
+            background: #10b981;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-description {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .system-logs {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeInLog 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeInLog {
+            to { opacity: 1; }
+        }
+
+        .summary-page {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .time-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .time-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .time-card.old {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #f87171;
+        }
+
+        .time-card.new {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #34d399;
+        }
+
+        .time-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .time-card.old .time-number {
+            color: #dc2626;
+        }
+
+        .time-card.new .time-number {
+            color: #059669;
+        }
+
+        .time-savings {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .savings-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #7c3aed;
+            margin-bottom: 0.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-circle">HD</div>
+                <div>
+                    <div class="logo-text">The Home Depot</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">AI Campaign Agent</div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <div class="workfront-badge">
+                    <div class="workfront-logo">Wf</div>
+                    <span>Powered by Adobe Workfront</span>
+                </div>
+                <div style="font-size: 0.9rem; opacity: 0.8;">
+                    Campaign time: 105 days → 50 days
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="campaign-brief" id="briefForm">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937;">Campaign Brief</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="product">Product Category</label>
+                    <select id="product">
+                        <option value="">Select Category</option>
+                        <option value="appliances">Appliances</option>
+                        <option value="tools-hardware">Tools & Hardware</option>
+                        <option value="lumber-building">Lumber & Building Materials</option>
+                        <option value="garden-outdoor">Garden & Outdoor</option>
+                        <option value="kitchen-bath">Kitchen & Bath</option>
+                        <option value="flooring">Flooring</option>
+                        <option value="paint">Paint & Home Decor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="campaign-type">Campaign Type</label>
+                    <select id="campaign-type">
+                        <option value="">Select Type</option>
+                        <option value="seasonal-promotion">Seasonal Promotion</option>
+                        <option value="new-customer-acquisition">New Customer Acquisition</option>
+                        <option value="customer-retention">Customer Retention</option>
+                        <option value="cross-category-upsell">Cross-Category Upsell</option>
+                        <option value="pro-customer-focus">Pro Customer Focus</option>
+                        <option value="diy-project-campaign">DIY Project Campaign</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="budget">Campaign Budget</label>
+                    <input type="text" id="budget" placeholder="e.g., $750,000">
+                </div>
+                <div class="form-group">
+                    <label for="target-audience-size">Target Audience Size</label>
+                    <input type="text" id="target-audience-size" placeholder="e.g., 250,000">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="objectives">Campaign Objectives</label>
+                <textarea id="objectives" rows="3" placeholder="Describe your campaign goals and success metrics..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="channels">Direct Mail Format</label>
+                    <select id="channels">
+                        <option value="postcards">Postcards</option>
+                        <option value="catalogs">Product Catalogs</option>
+                        <option value="flyers">Promotional Flyers</option>
+                        <option value="brochures">Project Brochures</option>
+                        <option value="coupons">Coupon Mailers</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="timeline">Launch Timeline</label>
+                    <input type="date" id="timeline">
+                </div>
+            </div>
+
+            <button class="btn" onclick="generateScenarios()">Generate AI Scenarios</button>
+        </div>
+
+        <div class="agent-thinking" id="thinkingSection">
+            <div class="thinking-header">
+                <div class="ai-avatar">AI</div>
+                <div>
+                    <h3>Campaign Agent is analyzing your brief...</h3>
+                    <div class="thinking-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="thinkingText">Analyzing customer data and shopping patterns...</div>
+        </div>
+
+        <div id="scenariosContainer">
+            <div class="scenarios-grid" id="scenariosGrid">
+                <!-- Scenarios will be populated here -->
+            </div>
+        </div>
+
+        <div class="scenario-detail-view" id="scenarioDetail">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937;" id="detailTitle">Scenario Details</h2>
+            
+            <div class="metrics-grid" id="metricsGrid">
+                <!-- Metrics will be populated here -->
+            </div>
+
+            <div class="detail-section">
+                <h3>Audience Targeting Strategy</h3>
+                <div id="targetingStrategy"></div>
+            </div>
+
+            <div class="detail-section">
+                <h3>Channel Optimization</h3>
+                <div id="channelStrategy"></div>
+            </div>
+
+            <div class="detail-section">
+                <h3>Expected Outcomes</h3>
+                <div id="expectedOutcomes"></div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="backToScenarios()">Back to Scenarios</button>
+                <button class="btn" onclick="createCampaign()">Create This Campaign</button>
+            </div>
+        </div>
+
+        <div class="creation-process" id="creationProcess">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937;">Creating Your Campaign</h2>
+            
+            <div class="process-step" id="step1">
+                <div class="step-icon pending">1</div>
+                <div class="step-content">
+                    <div class="step-title">Adobe Campaign Setup</div>
+                    <div class="step-description">Creating direct mail workflows and delivery templates</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step2">
+                <div class="step-icon pending">2</div>
+                <div class="step-content">
+                    <div class="step-title">BigQuery Audience Segmentation</div>
+                    <div class="step-description">Building audience queries and mail file processing</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step3">
+                <div class="step-icon pending">3</div>
+                <div class="step-content">
+                    <div class="step-title">Workfront Project Configuration</div>
+                    <div class="step-description">Setting up print production workflows and approvals</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step4">
+                <div class="step-icon pending">4</div>
+                <div class="step-content">
+                    <div class="step-title">Print Production Setup</div>
+                    <div class="step-description">Preparing mail files and coordinating with print vendors</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step5">
+                <div class="step-icon pending">5</div>
+                <div class="step-content">
+                    <div class="step-title">Mail File Delivery</div>
+                    <div class="step-description">Sending production files to printer and scheduling delivery</div>
+                </div>
+            </div>
+
+            <div class="system-logs" id="systemLogs">
+                <div class="log-entry">[INFO] Campaign creation process initiated...</div>
+            </div>
+        </div>
+
+        <div class="summary-page" id="summaryPage">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937; text-align: center;">Campaign Created Successfully! 🎉</h2>
+            
+            <div class="time-comparison">
+                <div class="time-card old">
+                    <div class="time-number">105</div>
+                    <div>Days (Traditional Process)</div>
+                    <div style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                        Manual workflows, Excel-based planning, multiple handoffs
+                    </div>
+                </div>
+                <div class="time-card new">
+                    <div class="time-number">50</div>
+                    <div>Days (AI-Powered Process)</div>
+                    <div style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                        Automated workflows, AI scenario generation, integrated systems
+                    </div>
+                </div>
+            </div>
+
+            <div class="time-savings">
+                <div class="savings-number">52%</div>
+                <div style="font-size: 1.2rem; font-weight: 600;">Time Savings Achieved</div>
+                <div style="font-size: 1rem; margin-top: 0.5rem;">55 days faster campaign deployment</div>
+            </div>
+
+            <div class="detail-section">
+                <h3>What Was Automated</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
+                        <strong>Adobe Campaign</strong><br>
+                        ✓ Direct mail workflows created<br>
+                        ✓ Variable data print templates<br>
+                        ✓ Audience segments optimized
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
+                        <strong>BigQuery & Mail Files</strong><br>
+                        ✓ Audience queries executed<br>
+                        ✓ NCOA and postal validation<br>
+                        ✓ Production files generated
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
+                        <strong>Print Coordination</strong><br>
+                        ✓ Vendor specifications created<br>
+                        ✓ Files delivered to printer<br>
+                        ✓ Production schedules confirmed
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="startOver()">Create Another Campaign</button>
+                <button class="btn" onclick="viewCampaign()">View Campaign Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                title: "Spring Garden Season Launch",
+                confidence: 92,
+                audience: "Homeowners & Garden Enthusiasts",
+                size: "185,000",
+                channels: "Product Catalog",
+                budget: "$425,000",
+                expectedROI: "3.2x",
+                criteria: "Homeowners, garden/outdoor purchase history, spring shopping patterns, age 35-65, suburban/rural locations, seasonal shopping behavior",
+                targeting: "Target homeowners with garden and outdoor purchase history during the critical spring season when garden planning and outdoor projects begin. Focus on customers who shop seasonally for garden supplies.",
+                channelStrategy: "Full-color garden catalogs featuring spring plants, tools, and outdoor furniture. Variable data printing for personalized product recommendations based on purchase history. Coordinated with RR Donnelley for high-quality catalog production.",
+                outcomes: "Expected 4.2% catalog response rate, 2.1% conversion rate, average order value $145. Projected 7,770 orders with strong seasonal lift. 5-day print and delivery cycle to capture early spring shopping."
+            },
+            {
+                title: "Pro Customer Tool Focus",
+                confidence: 94,
+                audience: "Professional Contractors & Builders",
+                size: "45,000",
+                channels: "Premium Brochure",
+                budget: "$380,000",
+                expectedROI: "4.8x",
+                criteria: "Pro Xtra members, contractors, builders, frequent tool purchases, commercial accounts, high lifetime value, bulk purchasing patterns",
+                targeting: "Focus on professional contractors and builders who make frequent, high-value tool and hardware purchases. Leverage Pro Xtra membership data for precise targeting of trade professionals.",
+                channelStrategy: "Premium tool brochures with trade-specific messaging, bulk pricing highlights, and new product showcases. Premium paper stock with spiral-bound format for job site reference. Coordinated with specialty trade print vendors.",
+                outcomes: "Expected 6.8% brochure response rate, 3.2% conversion rate, average order value $485. Projected 1,440 orders with high-value professional purchases. 7-day premium production cycle."
+            },
+            {
+                title: "Kitchen Renovation Inspiration",
+                confidence: 89,
+                audience: "Kitchen Renovation Planners",
+                size: "125,000",
+                channels: "Project Brochure",
+                budget: "$520,000",
+                expectedROI: "3.5x",
+                criteria: "Kitchen appliance browsers, cabinet shoppers, home renovation research, higher income households, recent home purchases, design-focused customers",
+                targeting: "Target customers showing kitchen renovation intent through online browsing behavior and in-store shopping patterns. Focus on homeowners in planning phases of major kitchen updates.",
+                channelStrategy: "Inspiring kitchen project brochures with before/after photos, product bundles, and financing options. High-quality photography and premium printing to showcase kitchen designs and drive showroom visits.",
+                outcomes: "Expected 3.8% brochure response rate, 1.8% conversion rate, average project value $2,850. Projected 2,375 kitchen consultations with high-value installations. 6-day production timeline."
+            },
+            {
+                title: "New Homeowner Welcome",
+                confidence: 91,
+                audience: "Recent Home Buyers",
+                size: "95,000",
+                channels: "Welcome Package",
+                budget: "$320,000",
+                expectedROI: "3.6x",
+                criteria: "Recent home purchases (0-6 months), first-time homeowners, moving indicators, new address data, home improvement needs, establishment phase",
+                targeting: "Welcome new homeowners during their critical establishment period when they have the highest needs for home improvement products, tools, and furnishing essentials.",
+                channelStrategy: "Comprehensive welcome packages with new homeowner checklists, essential product catalogs, and exclusive new customer offers. Premium packaging with Home Depot branding for strong first impression.",
+                outcomes: "Expected 5.2% package response rate, 2.8% conversion rate, average order value $195. Projected 2,660 new customer acquisitions. 4-day rush production for timely delivery."
+            },
+            {
+                title: "DIY Project Enthusiasts",
+                confidence: 87,
+                audience: "Weekend Warriors & DIY Hobbyists",
+                size: "210,000",
+                channels: "Project Flyer Series",
+                budget: "$295,000",
+                expectedROI: "2.9x",
+                criteria: "DIY purchase history, workshop attendance, how-to content engagement, weekend shopping patterns, project-based buying, tutorial viewers",
+                targeting: "Engage DIY enthusiasts who tackle weekend projects and home improvements. Target customers with history of project-based shopping and engagement with Home Depot's how-to content.",
+                channelStrategy: "Series of project-focused flyers with step-by-step instructions, required materials lists, and tool recommendations. Seasonal project themes with QR codes linking to video tutorials.",
+                outcomes: "Expected 3.4% flyer response rate, 1.6% conversion rate, average project spend $125. Projected 6,090 DIY project completions. 3-day rapid print production for project timing."
+            },
+            {
+                title: "Appliance Replacement Campaign",
+                confidence: 90,
+                audience: "Appliance Replacement Shoppers",
+                size: "85,000",
+                channels: "Appliance Catalog",
+                budget: "$480,000",
+                expectedROI: "4.1x",
+                criteria: "Appliance purchase history, older home indicators, appliance research behavior, energy efficiency interest, major appliance browsing, replacement cycles",
+                targeting: "Target customers with aging appliances who are in the research and consideration phase for major appliance replacements. Focus on energy efficiency and modern features messaging.",
+                channelStrategy: "Comprehensive appliance catalogs with energy savings calculations, trade-in offers, and installation services. Premium catalog production with appliance photography and feature comparisons.",
+                outcomes: "Expected 4.6% catalog response rate, 2.3% conversion rate, average appliance purchase $1,450. Projected 1,955 major appliance sales. 8-day production for quality catalog printing."
+            },
+            {
+                title: "Holiday Decorator Outreach",
+                confidence: 85,
+                audience: "Holiday & Seasonal Decorators",
+                size: "165,000",
+                channels: "Seasonal Flyer",
+                budget: "$350,000",
+                expectedROI: "3.1x",
+                criteria: "Holiday decoration purchases, seasonal shopping patterns, outdoor lighting buyers, festive display creators, early seasonal shoppers",
+                targeting: "Reach customers who invest in holiday and seasonal decorating, focusing on those who create elaborate displays and shop early for seasonal items and outdoor lighting.",
+                channelStrategy: "Festive seasonal flyers with holiday lighting displays, decoration ideas, and early bird pricing. Full-color printing with metallic accents for premium holiday feel. Coordinated delivery timing for optimal shopping periods.",
+                outcomes: "Expected 3.9% flyer response rate, 1.9% conversion rate, average seasonal spend $165. Projected 5,135 holiday decoration orders. 4-day production to meet seasonal timing requirements."
+            },
+            {
+                title: "Paint & Refresh Campaign",
+                confidence: 88,
+                audience: "Home Refresh & Paint Projects",
+                size: "155,000",
+                channels: "Color Guide Mailer",
+                budget: "$390,000",
+                expectedROI: "3.3x",
+                criteria: "Paint purchase history, color consultation bookings, interior design interest, home refresh projects, spring cleaning indicators, room makeover plans",
+                targeting: "Target customers planning interior refresh projects and paint makeovers. Focus on those who have shown interest in color consultation services and home design inspiration.",
+                channelStrategy: "Professional color guide mailers with trending color palettes, room inspiration photos, and color matching services promotion. High-quality color printing to showcase paint options accurately.",
+                outcomes: "Expected 4.1% mailer response rate, 2.2% conversion rate, average paint project $185. Projected 3,410 paint projects initiated. 5-day color-accurate production process."
+            },
+            {
+                title: "Flooring Project Focus",
+                confidence: 86,
+                audience: "Flooring Renovation Customers",
+                size: "75,000",
+                channels: "Flooring Showcase",
+                budget: "$520,000",
+                expectedROI: "3.7x",
+                criteria: "Flooring browsers, installation service inquiries, major renovation projects, flooring sample orders, home improvement loans, contractor referrals",
+                targeting: "Focus on customers in planning stages of major flooring projects who have browsed flooring options or requested installation consultations. Target high-value renovation projects.",
+                channelStrategy: "Premium flooring showcase brochures with actual material samples, installation photography, and financing options. Specialty printing with texture samples for tactile experience.",
+                outcomes: "Expected 3.2% showcase response rate, 1.4% conversion rate, average flooring project $3,200. Projected 1,050 major flooring installations. 10-day premium production with material samples."
+            },
+            {
+                title: "Loyal Customer Appreciation",
+                confidence: 95,
+                audience: "Existing High-Value Customers",
+                size: "55,000",
+                channels: "VIP Exclusive Package",
+                budget: "$275,000",
+                expectedROI: "5.2x",
+                criteria: "High lifetime value customers, frequent shoppers, Pro Xtra members, credit card holders, multi-category purchasers, brand advocates",
+                targeting: "Reward and retain highest-value customers with exclusive offers and early access to sales. Focus on customers with strong purchase history across multiple categories.",
+                channelStrategy: "Exclusive VIP packages with member-only pricing, early access offers, and personalized product recommendations. Premium packaging with gold foil accents and personalized messaging.",
+                outcomes: "Expected 7.8% package response rate, 4.2% conversion rate, average order value $285. Projected 2,310 high-value customer orders. 6-day premium member production priority."
+            }
+        ];
+
+        let currentScenario = null;
+
+        function generateScenarios() {
+            document.getElementById('briefForm').style.display = 'none';
+            document.getElementById('thinkingSection').style.display = 'block';
+            
+            const progressFill = document.getElementById('progressFill');
+            const thinkingText = document.getElementById('thinkingText');
+            
+            const messages = [
+                "Analyzing customer data and shopping patterns...",
+                "Processing seasonal trends and purchase behavior...",
+                "Evaluating direct mail performance and delivery optimization...",
+                "Generating personalized retail scenarios...",
+                "Calculating sales lift and revenue projections...",
+                "Finalizing print campaign recommendations..."
+            ];
+            
+            let progress = 0;
+            let messageIndex = 0;
+            
+            const interval = setInterval(() => {
+                progress += 16.67;
+                progressFill.style.width = progress + '%';
+                
+                if (messageIndex < messages.length) {
+                    thinkingText.textContent = messages[messageIndex];
+                    messageIndex++;
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('thinkingSection').style.display = 'none';
+                        displayScenarios();
+                    }, 1000);
+                }
+            }, 800);
+        }
+
+        function displayScenarios() {
+            const grid = document.getElementById('scenariosGrid');
+            grid.innerHTML = '';
+            
+            scenarios.forEach((scenario, index) => {
+                const card = createScenarioCard(scenario, index);
+                grid.appendChild(card);
+            });
+            
+            grid.style.display = 'grid';
+            grid.classList.add('fade-in');
+        }
+
+        function createScenarioCard(scenario, index) {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+                <div class="scenario-header">
+                    <div class="scenario-title">${scenario.title}</div>
+                    <div class="confidence-score">${scenario.confidence}% Confidence</div>
+                </div>
+                
+                <div class="scenario-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Target Size:</span>
+                        <span class="detail-value">${scenario.size}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Budget:</span>
+                        <span class="detail-value">${scenario.budget}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Mail Format:</span>
+                        <span class="detail-value">${scenario.channels}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Expected ROI:</span>
+                        <span class="detail-value">${scenario.expectedROI}</span>
+                    </div>
+                </div>
+                
+                <div class="audience-criteria">
+                    <div class="criteria-title">Audience Criteria:</div>
+                    <div class="criteria-list">${scenario.criteria}</div>
+                </div>
+                
+                <button class="select-scenario" onclick="selectScenario(${index})">
+                    View Details & Select
+                </button>
+            `;
+            
+            return card;
+        }
+
+        function selectScenario(index) {
+            currentScenario = scenarios[index];
+            document.getElementById('scenariosContainer').style.display = 'none';
+            showScenarioDetail();
+        }
+
+        function showScenarioDetail() {
+            const detailView = document.getElementById('scenarioDetail');
+            const scenario = currentScenario;
+            
+            document.getElementById('detailTitle').textContent = scenario.title;
+            
+            // Populate metrics
+            const metricsGrid = document.getElementById('metricsGrid');
+            metricsGrid.innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.size}</div>
+                    <div class="metric-label">Target Customers</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.budget}</div>
+                    <div class="metric-label">Campaign Budget</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.expectedROI}</div>
+                    <div class="metric-label">Expected ROI</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.confidence}%</div>
+                    <div class="metric-label">AI Confidence</div>
+                </div>
+            `;
+            
+            document.getElementById('targetingStrategy').innerHTML = `<p>${scenario.targeting}</p>`;
+            document.getElementById('channelStrategy').innerHTML = `<p>${scenario.channelStrategy}</p>`;
+            document.getElementById('expectedOutcomes').innerHTML = `<p>${scenario.outcomes}</p>`;
+            
+            detailView.style.display = 'block';
+            detailView.classList.add('fade-in');
+        }
+
+        function backToScenarios() {
+            document.getElementById('scenarioDetail').style.display = 'none';
+            document.getElementById('scenariosContainer').style.display = 'block';
+        }
+
+        function createCampaign() {
+            document.getElementById('scenarioDetail').style.display = 'none';
+            document.getElementById('creationProcess').style.display = 'block';
+            
+            startCampaignCreation();
+        }
+
+        function startCampaignCreation() {
+            const steps = [
+                {
+                    logs: [
+                        "[INFO] Connecting to Adobe Campaign Classic...",
+                        "[INFO] Creating direct mail workflow: HOME_DEPOT_" + currentScenario.title.replace(/\s+/g, '_').toUpperCase(),
+                        "[INFO] Configuring direct mail delivery templates...",
+                        "[INFO] Setting up variable data printing specifications...",
+                        "[SUCCESS] Adobe Campaign direct mail setup completed"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Connecting to BigQuery data warehouse...",
+                        "[INFO] Building audience segmentation query...",
+                        "[INFO] Processing " + currentScenario.size + " customer records...",
+                        "[INFO] Applying NCOA and postal validation...",
+                        "[INFO] Generating mail file with postal sorting...",
+                        "[SUCCESS] Audience segment and mail file created"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Initializing Workfront project...",
+                        "[INFO] Applying direct mail campaign template...",
+                        "[INFO] Setting up print production approval workflows...",
+                        "[INFO] Configuring creative review milestones...",
+                        "[INFO] Scheduling print vendor coordination...",
+                        "[SUCCESS] Workfront print production project configured"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Preparing production-ready mail files...",
+                        "[INFO] Generating USPS postal documentation...",
+                        "[INFO] Creating print vendor specifications...",
+                        "[INFO] Validating address hygiene and deliverability...",
+                        "[INFO] Optimizing mail piece design for automation...",
+                        "[SUCCESS] Print production files prepared"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Connecting to print vendor portal...",
+                        "[INFO] Uploading mail files to RR Donnelley...",
+                        "[INFO] Transmitting creative assets and specifications...",
+                        "[INFO] Confirming print production schedule...",
+                        "[INFO] Setting up postal delivery tracking...",
+                        "[SUCCESS] Files delivered to printer - Production initiated!"
+                    ]
+                }
+            ];
+
+            let currentStep = 0;
+            const logsContainer = document.getElementById('systemLogs');
+
+            function processStep() {
+                if (currentStep >= steps.length) {
+                    setTimeout(() => {
+                        document.getElementById('creationProcess').style.display = 'none';
+                        showSummary();
+                    }, 2000);
+                    return;
+                }
+
+                // Update step status
+                const stepElement = document.getElementById(`step${currentStep + 1}`);
+                const stepIcon = stepElement.querySelector('.step-icon');
+                stepElement.classList.add('active');
+                stepIcon.classList.remove('pending');
+                stepIcon.classList.add('active');
+
+                // Add logs for current step
+                const stepLogs = steps[currentStep].logs;
+                let logIndex = 0;
+
+                function addLog() {
+                    if (logIndex < stepLogs.length) {
+                        const logEntry = document.createElement('div');
+                        logEntry.className = 'log-entry';
+                        logEntry.textContent = stepLogs[logIndex];
+                        logsContainer.appendChild(logEntry);
+                        logsContainer.scrollTop = logsContainer.scrollHeight;
+                        logIndex++;
+                        setTimeout(addLog, 800);
+                    } else {
+                        // Mark step as completed
+                        stepElement.classList.remove('active');
+                        stepElement.classList.add('completed');
+                        stepIcon.classList.remove('active');
+                        stepIcon.classList.add('completed');
+                        stepIcon.textContent = '✓';
+                        
+                        currentStep++;
+                        setTimeout(processStep, 1000);
+                    }
+                }
+                addLog();
+            }
+
+            processStep();
+        }
+
+        function showSummary() {
+            document.getElementById('summaryPage').style.display = 'block';
+            document.getElementById('summaryPage').classList.add('fade-in');
+        }
+
+        function startOver() {
+            // Reset all sections
+            document.getElementById('summaryPage').style.display = 'none';
+            document.getElementById('creationProcess').style.display = 'none';
+            document.getElementById('scenarioDetail').style.display = 'none';
+            document.getElementById('scenariosContainer').style.display = 'none';
+            document.getElementById('thinkingSection').style.display = 'none';
+            document.getElementById('briefForm').style.display = 'block';
+            
+            // Reset process steps
+            for (let i = 1; i <= 5; i++) {
+                const step = document.getElementById(`step${i}`);
+                const icon = step.querySelector('.step-icon');
+                step.className = 'process-step';
+                icon.className = 'step-icon pending';
+                icon.textContent = i;
+            }
+            
+            // Clear logs
+            document.getElementById('systemLogs').innerHTML = '<div class="log-entry">[INFO] Campaign creation process initiated...</div>';
+            
+            currentScenario = null;
+        }
+
+        function viewCampaign() {
+            alert('Home Depot Campaign Dashboard will show:\n\n• Real-time customer segment status\n• Print production progress tracking\n• Mail piece creative approvals\n• Postal delivery timeline\n• USPS tracking integration\n• Print vendor coordination status\n\nAll systems connected - Files delivered to printer and production initiated!');
+        }
+
+        // Initialize form with default values for demo
+        window.onload = function() {
+            document.getElementById('product').value = 'garden-outdoor';
+            document.getElementById('campaign-type').value = 'seasonal-promotion';
+            document.getElementById('budget').value = '$750,000';
+            document.getElementById('target-audience-size').value = '250,000';
+            document.getElementById('objectives').value = 'Drive spring garden season sales by 30% among homeowners while maintaining a minimum 3:1 ROI through targeted direct mail campaigns';
+            document.getElementById('channels').value = 'catalogs';
+            
+            const today = new Date();
+            today.setDate(today.getDate() + 30);
+            document.getElementById('timeline').value = today.toISOString().split('T')[0];
+        };
+    </script>
+</body>
+</html>
