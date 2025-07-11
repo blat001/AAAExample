@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal Life Insurance - AI Campaign Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #003366 0%, #0066cc 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .salesforce-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .salesforce-logo {
+            width: 24px;
+            height: 24px;
+            background: #0176d3;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #0066cc 0%, #0099ff 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .campaign-brief {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            box-shadow: 0 2px 10px rgba(107, 114, 128, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 4px 20px rgba(107, 114, 128, 0.4);
+        }
+
+        .agent-thinking {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .thinking-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #3b82f6;
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .scenarios-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-left: 4px solid #0066cc;
+            transition: transform 0.3s;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .confidence-score {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .scenario-details {
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: #6b7280;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .audience-criteria {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .criteria-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .criteria-list {
+            font-size: 0.85rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .select-scenario {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .select-scenario:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0066cc, #3b82f6);
+            width: 0%;
+            transition: width 0.3s;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+
+        .scenario-detail-view {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .detail-section h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-card {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+
+        .creation-process {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .process-step.active {
+            border-left-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .process-step.completed {
+            border-left-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .step-icon.pending {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .step-icon.active {
+            background: #3b82f6;
+        }
+
+        .step-icon.completed {
+            background: #10b981;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-description {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .system-logs {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeInLog 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeInLog {
+            to { opacity: 1; }
+        }
+
+        .summary-page {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .time-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .time-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .time-card.old {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #f87171;
+        }
+
+        .time-card.new {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #34d399;
+        }
+
+        .time-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .time-card.old .time-number {
+            color: #dc2626;
+        }
+
+        .time-card.new .time-number {
+            color: #059669;
+        }
+
+        .time-savings {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .savings-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #7c3aed;
+            margin-bottom: 0.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">PL</div>
+                <div>
+                    <div class="logo-text">Principal Life Insurance</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">AI Campaign Agent</div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <div class="salesforce-badge">
+                    <div class="salesforce-logo">SF</div>
+                    <span>Powered by Salesforce</span>
+                </div>
+                <div style="font-size: 0.9rem; opacity: 0.8;">
+                    Campaign time: 105 days → 50 days
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="campaign-brief" id="briefForm">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937;">Campaign Brief</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="product">Insurance Product</label>
+                    <select id="product">
+                        <option value="">Select Product</option>
+                        <option value="term-life">Term Life Insurance</option>
+                        <option value="whole-life">Whole Life Insurance</option>
+                        <option value="universal-life">Universal Life Insurance</option>
+                        <option value="disability-insurance">Disability Insurance</option>
+                        <option value="annuities">Retirement Annuities</option>
+                        <option value="employee-benefits">Employee Benefits</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="campaign-type">Campaign Type</label>
+                    <select id="campaign-type">
+                        <option value="">Select Type</option>
+                        <option value="new-customer-acquisition">New Customer Acquisition</option>
+                        <option value="policy-retention">Policy Retention</option>
+                        <option value="cross-sell-upsell">Cross-sell/Upsell</option>
+                        <option value="policy-renewal">Policy Renewal</option>
+                        <option value="life-event-triggered">Life Event Triggered</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="budget">Campaign Budget</label>
+                    <input type="text" id="budget" placeholder="e.g., $500,000">
+                </div>
+                <div class="form-group">
+                    <label for="target-audience-size">Target Audience Size</label>
+                    <input type="text" id="target-audience-size" placeholder="e.g., 100,000">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="objectives">Campaign Objectives</label>
+                <textarea id="objectives" rows="3" placeholder="Describe your campaign goals and success metrics..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="channels">Preferred Channels</label>
+                    <select id="channels" multiple>
+                        <option value="email">Email Marketing</option>
+                        <option value="social-media">Social Media Advertising</option>
+                        <option value="display-ads">Display Advertising</option>
+                        <option value="direct-mail">Direct Mail</option>
+                        <option value="sms">SMS Marketing</option>
+                        <option value="connected-tv">Connected TV</option>
+                        <option value="search-advertising">Search Advertising</option>
+                        <option value="retargeting">Retargeting Campaigns</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="timeline">Launch Timeline</label>
+                    <input type="date" id="timeline">
+                </div>
+            </div>
+
+            <button class="btn" onclick="generateScenarios()">Generate AI Scenarios</button>
+        </div>
+
+        <div class="agent-thinking" id="thinkingSection">
+            <div class="thinking-header">
+                <div class="ai-avatar">AI</div>
+                <div>
+                    <h3>Campaign Agent is analyzing your brief...</h3>
+                    <div class="thinking-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="thinkingText">Analyzing customer data and life insurance patterns...</div>
+        </div>
+
+        <div id="scenariosContainer">
+            <div class="scenarios-grid" id="scenariosGrid">
+                <!-- Scenarios will be populated here -->
+            </div>
+        </div>
+
+        <div class="scenario-detail-view" id="scenarioDetail">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937;" id="detailTitle">Scenario Details</h2>
+            
+            <div class="metrics-grid" id="metricsGrid">
+                <!-- Metrics will be populated here -->
+            </div>
+
+            <div class="detail-section">
+                <h3>Audience Targeting Strategy</h3>
+                <div id="targetingStrategy"></div>
+            </div>
+
+            <div class="detail-section">
+                <h3>Channel Optimization</h3>
+                <div id="channelStrategy"></div>
+            </div>
+
+            <div class="detail-section">
+                <h3>Expected Outcomes</h3>
+                <div id="expectedOutcomes"></div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="backToScenarios()">Back to Scenarios</button>
+                <button class="btn" onclick="createCampaign()">Create This Campaign</button>
+            </div>
+        </div>
+
+        <div class="creation-process" id="creationProcess">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937;">Creating Your Campaign</h2>
+            
+            <div class="process-step" id="step1">
+                <div class="step-icon pending">1</div>
+                <div class="step-content">
+                    <div class="step-title">Marketing Cloud Campaign Setup</div>
+                    <div class="step-description">Creating Journey Builder workflows and automation</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step2">
+                <div class="step-icon pending">2</div>
+                <div class="step-content">
+                    <div class="step-title">Data Cloud Segmentation</div>
+                    <div class="step-description">Building unified customer profiles and audience segments</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step3">
+                <div class="step-icon pending">3</div>
+                <div class="step-content">
+                    <div class="step-title">Omnichannel Orchestration</div>
+                    <div class="step-description">Coordinating touchpoints across all digital channels</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step4">
+                <div class="step-icon pending">4</div>
+                <div class="step-content">
+                    <div class="step-title">Einstein AI Optimization</div>
+                    <div class="step-description">Enabling predictive analytics and personalization</div>
+                </div>
+            </div>
+
+            <div class="process-step" id="step5">
+                <div class="step-icon pending">5</div>
+                <div class="step-content">
+                    <div class="step-title">Campaign Activation</div>
+                    <div class="step-description">Launching multi-channel journeys with real-time tracking</div>
+                </div>
+            </div>
+
+            <div class="system-logs" id="systemLogs">
+                <div class="log-entry">[INFO] Campaign creation process initiated...</div>
+            </div>
+        </div>
+
+        <div class="summary-page" id="summaryPage">
+            <h2 style="margin-bottom: 1.5rem; color: #1f2937; text-align: center;">Campaign Created Successfully! 🎉</h2>
+            
+            <div class="time-comparison">
+                <div class="time-card old">
+                    <div class="time-number">105</div>
+                    <div>Days (Traditional Process)</div>
+                    <div style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                        Manual workflows, siloed systems, disconnected data
+                    </div>
+                </div>
+                <div class="time-card new">
+                    <div class="time-number">50</div>
+                    <div>Days (AI-Powered Process)</div>
+                    <div style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                        Einstein AI automation, unified customer data, omnichannel orchestration
+                    </div>
+                </div>
+            </div>
+
+            <div class="time-savings">
+                <div class="savings-number">52%</div>
+                <div style="font-size: 1.2rem; font-weight: 600;">Time Savings Achieved</div>
+                <div style="font-size: 1rem; margin-top: 0.5rem;">55 days faster campaign deployment</div>
+            </div>
+
+            <div class="detail-section">
+                <h3>What Was Automated</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
+                        <strong>Marketing Cloud Journeys</strong><br>
+                        ✓ Multi-channel customer journeys<br>
+                        ✓ Automated trigger campaigns<br>
+                        ✓ Personalized messaging flows
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
+                        <strong>Data Cloud Integration</strong><br>
+                        ✓ Unified customer profiles<br>
+                        ✓ Real-time segmentation<br>
+                        ✓ Cross-channel attribution
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
+                        <strong>Einstein AI Insights</strong><br>
+                        ✓ Predictive lead scoring<br>
+                        ✓ Personalization at scale<br>
+                        ✓ Optimization recommendations
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="startOver()">Create Another Campaign</button>
+                <button class="btn" onclick="viewCampaign()">View Campaign Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                title: "Life Event Triggered Acquisition",
+                confidence: 94,
+                audience: "New Parents & Homeowners",
+                size: "125,000",
+                channels: "Email + Social + Display",
+                budget: "$485,000",
+                expectedROI: "4.2x",
+                criteria: "New parents (0-2 years), recent home purchase, age 25-40, household income $50K+, no current life insurance, active on social media",
+                targeting: "Target individuals experiencing major life events that increase life insurance needs. Use real-time data signals from Data Cloud to identify optimal timing for outreach.",
+                channelStrategy: "Emotionally-driven email campaigns with family protection messaging, Facebook and Instagram ads featuring young families, retargeting display ads emphasizing financial security for loved ones.",
+                outcomes: "Expected 28% email open rate, 3.4% social engagement, 1.8% display CTR. Projected 2,850 applications, 1,425 policy sales, average premium $1,200 annually."
+            },
+            {
+                title: "High-Value Professional Targeting",
+                confidence: 91,
+                audience: "Affluent Professionals 35-55",
+                size: "85,000",
+                channels: "LinkedIn + Email + Search",
+                budget: "$620,000",
+                expectedROI: "3.8x",
+                criteria: "Age 35-55, professional/executive roles, income $100K+, high net worth indicators, existing investment accounts, estate planning needs",
+                targeting: "Focus on affluent professionals who need substantial life insurance coverage for wealth transfer and estate planning purposes. Leverage Data Cloud wealth indicators and professional networks.",
+                channelStrategy: "LinkedIn sponsored content targeting professionals, sophisticated email campaigns on estate planning, Google Ads for wealth management searches, personalized landing pages with premium messaging.",
+                outcomes: "Expected 12% LinkedIn engagement, 22% email open rate, 4.2% search ad CTR. Projected 1,200 qualified leads, 340 policy sales, average premium $4,500 annually."
+            },
+            {
+                title: "Empty Nesters Coverage Review",
+                confidence: 89,
+                audience: "Empty Nesters 50-65",
+                size: "95,000",
+                channels: "Email + Direct Mail + TV",
+                budget: "$520,000",
+                expectedROI: "3.5x",
+                criteria: "Age 50-65, children moved out, home equity $200K+, nearing retirement, existing life insurance policies, investment portfolios",
+                targeting: "Reach empty nesters who may need to adjust their life insurance coverage as their financial situation and family needs change during pre-retirement years.",
+                channelStrategy: "Educational email series on retirement planning, premium direct mail with personalized policy reviews, Connected TV ads during news programming, retirement planning webinars.",
+                outcomes: "Expected 25% email open rate, 2.8% direct mail response, 15% webinar attendance. Projected 1,650 policy reviews, 495 conversions, average premium adjustment +$800 annually."
+            },
+            {
+                title: "Millennial Digital-First Approach",
+                confidence: 87,
+                audience: "Tech-Savvy Millennials 25-40",
+                size: "180,000",
+                channels: "Social + Mobile + Email",
+                budget: "$390,000",
+                expectedROI: "3.1x",
+                criteria: "Age 25-40, mobile-first behavior, social media active, recent life milestones, urban/suburban, college educated, starting families",
+                targeting: "Engage digitally-native millennials through mobile-optimized experiences and social media touchpoints, emphasizing convenience and digital tools for insurance management.",
+                channelStrategy: "Instagram and TikTok video campaigns, mobile-first email designs, SMS reminders and updates, social media influencer partnerships, gamified insurance education content.",
+                outcomes: "Expected 35% social engagement, 32% email open rate, 8% SMS response. Projected 3,200 quote requests, 960 policy sales, average premium $850 annually."
+            },
+            {
+                title: "Small Business Owner Protection",
+                confidence: 92,
+                audience: "Small Business Owners",
+                size: "45,000",
+                channels: "LinkedIn + Email + Search",
+                budget: "$680,000",
+                expectedROI: "4.1x",
+                criteria: "Business owners, 1-50 employees, key person insurance needs, business loans/debt, partnership agreements, succession planning concerns",
+                targeting: "Target small business owners who need life insurance for business protection, key person coverage, and succession planning. Focus on businesses with growth trajectories and financial obligations.",
+                channelStrategy: "LinkedIn campaigns targeting business owners, email series on business protection strategies, Google Ads for business insurance searches, partnership with small business organizations.",
+                outcomes: "Expected 15% LinkedIn engagement, 26% email open rate, 5.1% search conversion. Projected 850 business consultations, 425 policy sales, average premium $2,800 annually."
+            },
+            {
+                title: "Competitive Conquest Campaign",
+                confidence: 83,
+                audience: "Competitor Policyholders",
+                size: "220,000",
+                channels: "Display + Email + Social",
+                budget: "$750,000",
+                expectedROI: "2.9x",
+                criteria: "Current life insurance policyholders with competitors, policy renewal periods, price sensitivity, service dissatisfaction indicators, digital engagement patterns",
+                targeting: "Strategic acquisition of customers from key competitors during renewal periods, focusing on those showing signs of dissatisfaction or price sensitivity through digital behavior.",
+                channelStrategy: "Competitive comparison display ads, switching incentive email campaigns, social media testimonials from satisfied switchers, rate comparison tools and calculators.",
+                outcomes: "Expected 1.6% display CTR, 18% email open rate, 2.8% social conversion. Projected 2,100 quote comparisons, 630 policy switches, average premium $1,350 annually."
+            },
+            {
+                title: "Customer Retention & Upsell",
+                confidence: 96,
+                audience: "Existing Principal Customers",
+                size: "65,000",
+                channels: "Email + Mobile App + Direct Mail",
+                budget: "$275,000",
+                expectedROI: "5.8x",
+                criteria: "Current Principal customers, single product relationships, high satisfaction scores, life stage changes, increased income indicators, loyalty program members",
+                targeting: "Maximize value from existing customer relationships by identifying cross-sell and upsell opportunities based on life stage changes and increased financial capacity.",
+                channelStrategy: "Personalized email campaigns based on customer journey stage, in-app notifications and offers, premium direct mail for high-value customers, exclusive customer events and webinars.",
+                outcomes: "Expected 45% email open rate, 62% app engagement, 4.2% direct mail response. Projected 1,950 additional products sold, average premium increase $1,100 annually."
+            },
+            {
+                title: "Pre-Retiree Wealth Transfer",
+                confidence: 90,
+                audience: "Pre-Retirees 55-65",
+                size: "42,000",
+                channels: "Email + Direct Mail + Webinars",
+                budget: "$580,000",
+                expectedROI: "4.3x",
+                criteria: "Age 55-65, high net worth, estate planning needs, wealth transfer goals, existing investment portfolios, family wealth considerations",
+                targeting: "Target affluent pre-retirees focused on wealth transfer and estate planning strategies. Emphasize tax-advantaged wealth transfer through life insurance vehicles.",
+                channelStrategy: "Sophisticated email content on estate planning, premium direct mail with estate planning guides, exclusive wealth transfer webinars, partnership with financial advisors.",
+                outcomes: "Expected 30% email engagement, 3.8% direct mail response, 55% webinar attendance. Projected 520 consultations, 208 high-value policy sales, average premium $8,500 annually."
+            },
+            {
+                title: "Health-Conscious Wellness Focus",
+                confidence: 85,
+                audience: "Health & Fitness Enthusiasts",
+                size: "110,000",
+                channels: "Social + Email + Mobile",
+                budget: "$420,000",
+                expectedROI: "3.2x",
+                criteria: "Health and fitness app users, gym memberships, wearable device data, healthy lifestyle indicators, preventive healthcare engagement, wellness program participation",
+                targeting: "Reach health-conscious individuals who may qualify for preferred life insurance rates. Use fitness and wellness data to identify prospects with healthy lifestyles.",
+                channelStrategy: "Fitness app partnerships, Instagram health influencer campaigns, wellness-focused email content, mobile fitness tracking integration, healthy lifestyle premium discounts.",
+                outcomes: "Expected 32% social engagement, 28% email open rate, 12% mobile app conversion. Projected 2,200 health assessments, 1,100 policy sales, average premium $950 annually."
+            },
+            {
+                title: "Geographic Market Expansion",
+                confidence: 88,
+                audience: "New Market Prospects",
+                size: "150,000",
+                channels: "Display + Search + Email",
+                budget: "$640,000",
+                expectedROI: "3.4x",
+                criteria: "Residents in target expansion markets, no current Principal relationship, competitive insurance holders, local market characteristics, regional preferences",
+                targeting: "Establish Principal Life Insurance presence in new geographic markets through comprehensive digital marketing approach tailored to regional preferences and competitive landscape.",
+                channelStrategy: "Geo-targeted display advertising, local search marketing, regionally customized email campaigns, community partnership marketing, local agent introduction campaigns.",
+                outcomes: "Expected 2.1% display CTR, 4.8% search conversion, 24% email open rate. Projected 1,800 quote requests, 720 new market policy sales, average premium $1,200 annually."
+            }
+        ];
+
+        let currentScenario = null;
+
+        function generateScenarios() {
+            document.getElementById('briefForm').style.display = 'none';
+            document.getElementById('thinkingSection').style.display = 'block';
+            
+            const progressFill = document.getElementById('progressFill');
+            const thinkingText = document.getElementById('thinkingText');
+            
+            const messages = [
+                "Analyzing customer data and life insurance patterns...",
+                "Processing life event triggers and behavioral signals...",
+                "Evaluating multi-channel performance and attribution...",
+                "Generating personalized insurance scenarios...",
+                "Calculating policy conversion and premium projections...",
+                "Finalizing omnichannel campaign recommendations..."
+            ];
+            
+            let progress = 0;
+            let messageIndex = 0;
+            
+            const interval = setInterval(() => {
+                progress += 16.67;
+                progressFill.style.width = progress + '%';
+                
+                if (messageIndex < messages.length) {
+                    thinkingText.textContent = messages[messageIndex];
+                    messageIndex++;
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('thinkingSection').style.display = 'none';
+                        displayScenarios();
+                    }, 1000);
+                }
+            }, 800);
+        }
+
+        function displayScenarios() {
+            const grid = document.getElementById('scenariosGrid');
+            grid.innerHTML = '';
+            
+            scenarios.forEach((scenario, index) => {
+                const card = createScenarioCard(scenario, index);
+                grid.appendChild(card);
+            });
+            
+            grid.style.display = 'grid';
+            grid.classList.add('fade-in');
+        }
+
+        function createScenarioCard(scenario, index) {
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+                <div class="scenario-header">
+                    <div class="scenario-title">${scenario.title}</div>
+                    <div class="confidence-score">${scenario.confidence}% Confidence</div>
+                </div>
+                
+                <div class="scenario-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Target Size:</span>
+                        <span class="detail-value">${scenario.size}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Budget:</span>
+                        <span class="detail-value">${scenario.budget}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Channels:</span>
+                        <span class="detail-value">${scenario.channels}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Expected ROI:</span>
+                        <span class="detail-value">${scenario.expectedROI}</span>
+                    </div>
+                </div>
+                
+                <div class="audience-criteria">
+                    <div class="criteria-title">Audience Criteria:</div>
+                    <div class="criteria-list">${scenario.criteria}</div>
+                </div>
+                
+                <button class="select-scenario" onclick="selectScenario(${index})">
+                    View Details & Select
+                </button>
+            `;
+            
+            return card;
+        }
+
+        function selectScenario(index) {
+            currentScenario = scenarios[index];
+            document.getElementById('scenariosContainer').style.display = 'none';
+            showScenarioDetail();
+        }
+
+        function showScenarioDetail() {
+            const detailView = document.getElementById('scenarioDetail');
+            const scenario = currentScenario;
+            
+            document.getElementById('detailTitle').textContent = scenario.title;
+            
+            // Populate metrics
+            const metricsGrid = document.getElementById('metricsGrid');
+            metricsGrid.innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.size}</div>
+                    <div class="metric-label">Target Audience</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.budget}</div>
+                    <div class="metric-label">Campaign Budget</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.expectedROI}</div>
+                    <div class="metric-label">Expected ROI</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${scenario.confidence}%</div>
+                    <div class="metric-label">AI Confidence</div>
+                </div>
+            `;
+            
+            document.getElementById('targetingStrategy').innerHTML = `<p>${scenario.targeting}</p>`;
+            document.getElementById('channelStrategy').innerHTML = `<p>${scenario.channelStrategy}</p>`;
+            document.getElementById('expectedOutcomes').innerHTML = `<p>${scenario.outcomes}</p>`;
+            
+            detailView.style.display = 'block';
+            detailView.classList.add('fade-in');
+        }
+
+        function backToScenarios() {
+            document.getElementById('scenarioDetail').style.display = 'none';
+            document.getElementById('scenariosContainer').style.display = 'block';
+        }
+
+        function createCampaign() {
+            document.getElementById('scenarioDetail').style.display = 'none';
+            document.getElementById('creationProcess').style.display = 'block';
+            
+            startCampaignCreation();
+        }
+
+        function startCampaignCreation() {
+            const steps = [
+                {
+                    logs: [
+                        "[INFO] Connecting to Salesforce Marketing Cloud...",
+                        "[INFO] Creating Journey Builder workflow: PRINCIPAL_" + currentScenario.title.replace(/\s+/g, '_').toUpperCase(),
+                        "[INFO] Configuring multi-channel customer journeys...",
+                        "[INFO] Setting up Email Studio templates and automation...",
+                        "[SUCCESS] Marketing Cloud campaign infrastructure created"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Accessing Salesforce Data Cloud...",
+                        "[INFO] Building unified customer profiles and segments...",
+                        "[INFO] Processing " + currentScenario.size + " customer records...",
+                        "[INFO] Applying life insurance propensity scoring...",
+                        "[INFO] Integrating with Sales Cloud opportunity data...",
+                        "[SUCCESS] Data Cloud segmentation and scoring completed"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Orchestrating omnichannel touchpoints...",
+                        "[INFO] Configuring cross-channel message coordination...",
+                        "[INFO] Setting up journey attribution tracking...",
+                        "[INFO] Enabling real-time decision making...",
+                        "[INFO] Synchronizing customer engagement history...",
+                        "[SUCCESS] Omnichannel orchestration configured"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Activating Einstein AI personalization...",
+                        "[INFO] Configuring predictive lead scoring models...",
+                        "[INFO] Setting up Einstein Content Selection...",
+                        "[INFO] Enabling Einstein Send Time Optimization...",
+                        "[INFO] Initializing Einstein Engagement Frequency...",
+                        "[SUCCESS] Einstein AI optimization fully enabled"
+                    ]
+                },
+                {
+                    logs: [
+                        "[INFO] Launching Marketing Cloud customer journeys...",
+                        "[INFO] Activating Social Studio campaigns...",
+                        "[INFO] Deploying Advertising Studio targeting...",
+                        "[INFO] Enabling real-time Analytics and reporting...",
+                        "[INFO] Initiating Salesforce CRM lead integration...",
+                        "[SUCCESS] Multi-channel insurance campaign launched!"
+                    ]
+                }
+            ];
+
+            let currentStep = 0;
+            const logsContainer = document.getElementById('systemLogs');
+
+            function processStep() {
+                if (currentStep >= steps.length) {
+                    setTimeout(() => {
+                        document.getElementById('creationProcess').style.display = 'none';
+                        showSummary();
+                    }, 2000);
+                    return;
+                }
+
+                // Update step status
+                const stepElement = document.getElementById(`step${currentStep + 1}`);
+                const stepIcon = stepElement.querySelector('.step-icon');
+                stepElement.classList.add('active');
+                stepIcon.classList.remove('pending');
+                stepIcon.classList.add('active');
+
+                // Add logs for current step
+                const stepLogs = steps[currentStep].logs;
+                let logIndex = 0;
+
+                function addLog() {
+                    if (logIndex < stepLogs.length) {
+                        const logEntry = document.createElement('div');
+                        logEntry.className = 'log-entry';
+                        logEntry.textContent = stepLogs[logIndex];
+                        logsContainer.appendChild(logEntry);
+                        logsContainer.scrollTop = logsContainer.scrollHeight;
+                        logIndex++;
+                        setTimeout(addLog, 800);
+                    } else {
+                        // Mark step as completed
+                        stepElement.classList.remove('active');
+                        stepElement.classList.add('completed');
+                        stepIcon.classList.remove('active');
+                        stepIcon.classList.add('completed');
+                        stepIcon.textContent = '✓';
+                        
+                        currentStep++;
+                        setTimeout(processStep, 1000);
+                    }
+                }
+                addLog();
+            }
+
+            processStep();
+        }
+
+        function showSummary() {
+            document.getElementById('summaryPage').style.display = 'block';
+            document.getElementById('summaryPage').classList.add('fade-in');
+        }
+
+        function startOver() {
+            // Reset all sections
+            document.getElementById('summaryPage').style.display = 'none';
+            document.getElementById('creationProcess').style.display = 'none';
+            document.getElementById('scenarioDetail').style.display = 'none';
+            document.getElementById('scenariosContainer').style.display = 'none';
+            document.getElementById('thinkingSection').style.display = 'none';
+            document.getElementById('briefForm').style.display = 'block';
+            
+            // Reset process steps
+            for (let i = 1; i <= 5; i++) {
+                const step = document.getElementById(`step${i}`);
+                const icon = step.querySelector('.step-icon');
+                step.className = 'process-step';
+                icon.className = 'step-icon pending';
+                icon.textContent = i;
+            }
+            
+            // Clear logs
+            document.getElementById('systemLogs').innerHTML = '<div class="log-entry">[INFO] Campaign creation process initiated...</div>';
+            
+            currentScenario = null;
+        }
+
+        function viewCampaign() {
+            alert('Insurance Campaign Dashboard will show:\n\n• Real-time customer journey progression\n• Multi-channel engagement analytics\n• Einstein AI personalization insights\n• Policy application conversion tracking\n• Cross-channel attribution analysis\n• Life event trigger monitoring\n\nAll Salesforce systems integrated and actively nurturing prospects!');
+        }
+
+        // Initialize form with default values for demo
+        window.onload = function() {
+            document.getElementById('product').value = 'term-life';
+            document.getElementById('campaign-type').value = 'new-customer-acquisition';
+            document.getElementById('budget').value = '$500,000';
+            document.getElementById('target-audience-size').value = '100,000';
+            document.getElementById('objectives').value = 'Increase term life insurance sales by 25% among young families while maintaining a minimum 3.5:1 ROI across all digital channels using Einstein AI personalization';
+            
+            const today = new Date();
+            today.setDate(today.getDate() + 30);
+            document.getElementById('timeline').value = today.toISOString().split('T')[0];
+        };
+    </script>
+</body>
+</html>
