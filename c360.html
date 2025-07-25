@@ -1,0 +1,576 @@
+import React, { useState, useEffect } from 'react';
+import { ChevronRight, Database, Shield, Brain, Target, Sparkles, Users, TrendingUp, Zap, Search, BarChart3, Lock, Globe, Layers, Bot, CheckCircle } from 'lucide-react';
+
+const MerkuryC360Demo = () => {
+  const [activeFeature, setActiveFeature] = useState('identity');
+  const [customerProfile, setCustomerProfile] = useState(null);
+  const [unifiedRecords, setUnifiedRecords] = useState([]);
+  const [dataQuality, setDataQuality] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [audienceSegment, setAudienceSegment] = useState(null);
+  const [llmResponse, setLlmResponse] = useState('');
+
+  // Sample disparate customer records
+  const disparateRecords = [
+    { id: 1, source: 'CRM', email: 'john.smith@email.com', name: 'John Smith', phone: '415-555-0123', lastPurchase: '2024-12-15' },
+    { id: 2, source: 'E-commerce', email: 'j.smith@email.com', name: 'J. Smith', address: '123 Market St, San Francisco', orderCount: 5 },
+    { id: 3, source: 'Mobile App', email: 'john.smith@email.com', name: 'Johnny Smith', deviceId: 'ABC123', appEngagement: 'High' },
+    { id: 4, source: 'Ad Platform', email: 'j.smith@email.com', clickCount: 45, impressions: 1250, lastClick: '2025-01-10' }
+  ];
+
+  // Merkle brand colors
+  const merkleColors = {
+    primary: '#FF6900', // Merkle Orange
+    secondary: '#0B1929', // Dark Blue
+    accent: '#4A90E2', // Light Blue
+    success: '#00C851',
+    warning: '#FFBB33',
+    danger: '#FF4444',
+    light: '#F8F9FA',
+    dark: '#212529'
+  };
+
+  const features = [
+    { id: 'identity', icon: Users, title: 'Identity Resolution', description: 'Unify disparate records into a single customer view' },
+    { id: 'quality', icon: Shield, title: 'Data Quality (Q+)', description: 'Clean and ensure data accuracy with our Q+ framework' },
+    { id: 'insights', icon: Brain, title: 'Deep Insights', description: 'Build comprehensive insights from unified data' },
+    { id: 'activation', icon: Target, title: 'Audience Activation', description: 'Send targeted audiences to media platforms' },
+    { id: 'llm', icon: Bot, title: 'LLM Data Access', description: 'Query your data using natural language' },
+    { id: 'enrichment', icon: Sparkles, title: 'Merkury Data', description: 'Enhance with 3rd party data for better targeting' }
+  ];
+
+  const processIdentityResolution = () => {
+    setIsProcessing(true);
+    setTimeout(() => {
+      const unified = {
+        merkuryId: 'MRK-2025-001234',
+        fullName: 'John Smith',
+        email: 'john.smith@email.com',
+        phone: '415-555-0123',
+        address: '123 Market St, San Francisco, CA 94105',
+        totalPurchases: 5,
+        lifetimeValue: '$2,847',
+        lastEngagement: '2025-01-10',
+        preferredChannel: 'Email',
+        deviceIds: ['ABC123', 'DEF456'],
+        sources: ['CRM', 'E-commerce', 'Mobile App', 'Ad Platform']
+      };
+      setCustomerProfile(unified);
+      setUnifiedRecords(disparateRecords);
+      setIsProcessing(false);
+    }, 2000);
+  };
+
+  const processDataQuality = () => {
+    setIsProcessing(true);
+    setTimeout(() => {
+      setDataQuality({
+        totalRecords: 125470,
+        cleanRecords: 119197,
+        accuracy: 95,
+        completeness: 92,
+        consistency: 97,
+        issues: [
+          { type: 'Missing Email', count: 3247, severity: 'medium' },
+          { type: 'Invalid Phone', count: 1892, severity: 'low' },
+          { type: 'Duplicate Records', count: 1134, severity: 'high' }
+        ],
+        improvements: [
+          'Standardized address formats across all records',
+          'Validated email addresses using industry standards',
+          'Normalized phone numbers to E.164 format',
+          'Removed 1,134 duplicate customer records'
+        ]
+      });
+      setIsProcessing(false);
+    }, 2000);
+  };
+
+  const buildAudienceSegment = () => {
+    setIsProcessing(true);
+    setTimeout(() => {
+      setAudienceSegment({
+        name: 'High-Value Urban Professionals',
+        size: 45280,
+        criteria: [
+          'Lifetime Value > $1,000',
+          'Location: Major Metro Areas',
+          'Age: 25-45',
+          'Income: $75K+',
+          'Recent Engagement: Last 30 days'
+        ],
+        platforms: ['Google Ads', 'Facebook', 'The Trade Desk', 'Amazon DSP'],
+        estimatedReach: '2.3M impressions',
+        estimatedROI: '425%'
+      });
+      setIsProcessing(false);
+    }, 2000);
+  };
+
+  const queryWithLLM = () => {
+    setIsProcessing(true);
+    setTimeout(() => {
+      setLlmResponse(`Based on your Merkury Consumer 360 data:
+
+**Customer Segment Analysis:**
+- Your highest-value customers (top 20%) generate 78% of revenue
+- Primary demographic: Urban professionals aged 28-42
+- Average order value: $284
+- Preferred channels: Email (45%), Mobile App (35%), Web (20%)
+
+**Recommended Actions:**
+1. Launch personalized email campaign for dormant high-value customers
+2. Create lookalike audiences based on top performers
+3. Implement dynamic pricing for loyalty members
+4. Optimize mobile app experience for peak engagement times (6-8 PM)`);
+      setIsProcessing(false);
+    }, 2000);
+  };
+
+  const renderFeatureContent = () => {
+    switch (activeFeature) {
+      case 'identity':
+        return (
+          <div className="space-y-6">
+            <div className="bg-gray-50 p-6 rounded-lg">
+              <h3 className="text-xl font-semibold mb-4 text-gray-800">Disparate Customer Records</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {disparateRecords.map((record) => (
+                  <div key={record.id} className="bg-white p-4 rounded border border-gray-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-600">{record.source}</span>
+                      <Database className="w-4 h-4 text-gray-400" />
+                    </div>
+                    <div className="text-sm space-y-1">
+                      {Object.entries(record).filter(([key]) => key !== 'id' && key !== 'source').map(([key, value]) => (
+                        <div key={key} className="flex justify-between">
+                          <span className="text-gray-600">{key}:</span>
+                          <span className="text-gray-900 font-medium">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={processIdentityResolution}
+                disabled={isProcessing}
+                className="w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-200 flex items-center justify-center gap-2"
+                style={{ backgroundColor: merkleColors.primary }}
+              >
+                {isProcessing ? (
+                  <>Processing...</>
+                ) : (
+                  <>
+                    <Zap className="w-5 h-5" />
+                    Unify Records with Merkury Identity
+                  </>
+                )}
+              </button>
+            </div>
+
+            {customerProfile && (
+              <div className="bg-white p-6 rounded-lg border-2" style={{ borderColor: merkleColors.primary }}>
+                <h3 className="text-xl font-semibold mb-4 flex items-center gap-2" style={{ color: merkleColors.primary }}>
+                  <CheckCircle className="w-6 h-6" />
+                  Unified Customer Profile
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-sm text-gray-600">Merkury ID:</span>
+                      <p className="font-semibold text-gray-900">{customerProfile.merkuryId}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Full Name:</span>
+                      <p className="font-semibold text-gray-900">{customerProfile.fullName}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Email:</span>
+                      <p className="font-semibold text-gray-900">{customerProfile.email}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Phone:</span>
+                      <p className="font-semibold text-gray-900">{customerProfile.phone}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-sm text-gray-600">Lifetime Value:</span>
+                      <p className="font-semibold text-gray-900">{customerProfile.lifetimeValue}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Total Purchases:</span>
+                      <p className="font-semibold text-gray-900">{customerProfile.totalPurchases}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Preferred Channel:</span>
+                      <p className="font-semibold text-gray-900">{customerProfile.preferredChannel}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Data Sources:</span>
+                      <p className="font-semibold text-gray-900">{customerProfile.sources.join(', ')}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'quality':
+        return (
+          <div className="space-y-6">
+            <div className="bg-gray-50 p-6 rounded-lg">
+              <h3 className="text-xl font-semibold mb-4 text-gray-800">Data Quality Assessment</h3>
+              <p className="text-gray-600 mb-6">
+                Our Q+ framework automatically analyzes and improves your data quality across multiple dimensions.
+              </p>
+              <button
+                onClick={processDataQuality}
+                disabled={isProcessing}
+                className="w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-200 flex items-center justify-center gap-2"
+                style={{ backgroundColor: merkleColors.primary }}
+              >
+                {isProcessing ? (
+                  <>Analyzing Data Quality...</>
+                ) : (
+                  <>
+                    <Shield className="w-5 h-5" />
+                    Run Q+ Data Quality Analysis
+                  </>
+                )}
+              </button>
+            </div>
+
+            {dataQuality && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-gray-600">Accuracy</span>
+                      <BarChart3 className="w-5 h-5" style={{ color: merkleColors.success }} />
+                    </div>
+                    <p className="text-3xl font-bold" style={{ color: merkleColors.success }}>
+                      {dataQuality.accuracy}%
+                    </p>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-gray-600">Completeness</span>
+                      <BarChart3 className="w-5 h-5" style={{ color: merkleColors.warning }} />
+                    </div>
+                    <p className="text-3xl font-bold" style={{ color: merkleColors.warning }}>
+                      {dataQuality.completeness}%
+                    </p>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-gray-600">Consistency</span>
+                      <BarChart3 className="w-5 h-5" style={{ color: merkleColors.success }} />
+                    </div>
+                    <p className="text-3xl font-bold" style={{ color: merkleColors.success }}>
+                      {dataQuality.consistency}%
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  <h4 className="font-semibold mb-4 text-gray-800">Data Quality Improvements</h4>
+                  <ul className="space-y-2">
+                    {dataQuality.improvements.map((improvement, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: merkleColors.success }} />
+                        <span className="text-gray-700">{improvement}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'activation':
+        return (
+          <div className="space-y-6">
+            <div className="bg-gray-50 p-6 rounded-lg">
+              <h3 className="text-xl font-semibold mb-4 text-gray-800">Audience Builder</h3>
+              <p className="text-gray-600 mb-6">
+                Create and activate targeted audiences across multiple media platforms using your unified customer data.
+              </p>
+              <button
+                onClick={buildAudienceSegment}
+                disabled={isProcessing}
+                className="w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-200 flex items-center justify-center gap-2"
+                style={{ backgroundColor: merkleColors.primary }}
+              >
+                {isProcessing ? (
+                  <>Building Audience Segment...</>
+                ) : (
+                  <>
+                    <Target className="w-5 h-5" />
+                    Build & Activate Audience
+                  </>
+                )}
+              </button>
+            </div>
+
+            {audienceSegment && (
+              <div className="space-y-6">
+                <div className="bg-white p-6 rounded-lg border-2" style={{ borderColor: merkleColors.primary }}>
+                  <h4 className="text-xl font-semibold mb-4" style={{ color: merkleColors.primary }}>
+                    {audienceSegment.name}
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h5 className="font-semibold mb-2 text-gray-800">Audience Criteria</h5>
+                      <ul className="space-y-1">
+                        {audienceSegment.criteria.map((criterion, index) => (
+                          <li key={index} className="text-sm text-gray-700 flex items-center gap-2">
+                            <ChevronRight className="w-4 h-4" style={{ color: merkleColors.accent }} />
+                            {criterion}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <span className="text-sm text-gray-600">Audience Size:</span>
+                        <p className="text-2xl font-bold" style={{ color: merkleColors.primary }}>
+                          {audienceSegment.size.toLocaleString()}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Estimated Reach:</span>
+                        <p className="font-semibold text-gray-900">{audienceSegment.estimatedReach}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Estimated ROI:</span>
+                        <p className="font-semibold" style={{ color: merkleColors.success }}>
+                          {audienceSegment.estimatedROI}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  <h5 className="font-semibold mb-4 text-gray-800">Activation Platforms</h5>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {audienceSegment.platforms.map((platform, index) => (
+                      <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
+                        <Globe className="w-8 h-8 mx-auto mb-2" style={{ color: merkleColors.accent }} />
+                        <p className="text-sm font-medium text-gray-700">{platform}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'llm':
+        return (
+          <div className="space-y-6">
+            <div className="bg-gray-50 p-6 rounded-lg">
+              <h3 className="text-xl font-semibold mb-4 text-gray-800">AI-Powered Data Insights</h3>
+              <p className="text-gray-600 mb-6">
+                Ask questions about your customer data in natural language and get instant insights powered by AI.
+              </p>
+              <div className="space-y-4">
+                <div className="bg-white p-4 rounded-lg border border-gray-200">
+                  <p className="text-gray-700 mb-2">Example query:</p>
+                  <p className="font-medium text-gray-900">
+                    "What are the characteristics of my highest-value customers and how can I better engage them?"
+                  </p>
+                </div>
+                <button
+                  onClick={queryWithLLM}
+                  disabled={isProcessing}
+                  className="w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-200 flex items-center justify-center gap-2"
+                  style={{ backgroundColor: merkleColors.primary }}
+                >
+                  {isProcessing ? (
+                    <>Analyzing Your Data...</>
+                  ) : (
+                    <>
+                      <Bot className="w-5 h-5" />
+                      Get AI Insights
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {llmResponse && (
+              <div className="bg-white p-6 rounded-lg border-2" style={{ borderColor: merkleColors.primary }}>
+                <h4 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: merkleColors.primary }}>
+                  <Sparkles className="w-5 h-5" />
+                  AI Analysis Results
+                </h4>
+                <div className="prose prose-sm max-w-none">
+                  <div className="whitespace-pre-wrap text-gray-700">{llmResponse}</div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      default:
+        return (
+          <div className="bg-gray-50 p-12 rounded-lg text-center">
+            <div className="mb-4">
+              {React.createElement(features.find(f => f.id === activeFeature)?.icon || Database, {
+                className: "w-16 h-16 mx-auto",
+                style: { color: merkleColors.primary }
+              })}
+            </div>
+            <h3 className="text-2xl font-semibold mb-2 text-gray-800">
+              {features.find(f => f.id === activeFeature)?.title}
+            </h3>
+            <p className="text-gray-600 max-w-md mx-auto">
+              {features.find(f => f.id === activeFeature)?.description}
+            </p>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center">
+                <span className="text-2xl font-bold" style={{ color: merkleColors.secondary }}>Merkury</span>
+                <span className="text-2xl font-bold" style={{ color: merkleColors.primary }}>.</span>
+              </div>
+              <div className="hidden md:block h-8 w-px bg-gray-300"></div>
+              <span className="hidden md:block text-lg font-medium text-gray-700">Consumer 360 Demo</span>
+            </div>
+            <div className="flex items-center gap-4 text-sm">
+              <span className="text-gray-600">Powered by Merkury Identity</span>
+              <div className="px-3 py-1 rounded-full text-white text-xs font-medium" style={{ backgroundColor: merkleColors.success }}>
+                LIVE DEMO
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="py-12" style={{ background: `linear-gradient(135deg, ${merkleColors.secondary} 0%, ${merkleColors.accent} 100%)` }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center text-white">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Transform Your Customer Data Into
+              <span style={{ color: merkleColors.primary }}> Exceptional Experiences</span>
+            </h1>
+            <p className="text-xl opacity-90 max-w-3xl mx-auto">
+              Merkury Consumer 360 unifies, enriches, and activates your customer data to drive 
+              AI-ready personalization at scale
+            </p>
+            <div className="mt-8 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+              <div className="text-center">
+                <p className="text-3xl font-bold" style={{ color: merkleColors.primary }}>95%</p>
+                <p className="text-sm opacity-80">US Coverage</p>
+              </div>
+              <div className="text-center">
+                <p className="text-3xl font-bold" style={{ color: merkleColors.primary }}>25%</p>
+                <p className="text-sm opacity-80">Average ROI Boost</p>
+              </div>
+              <div className="text-center">
+                <p className="text-3xl font-bold" style={{ color: merkleColors.primary }}>5,000+</p>
+                <p className="text-sm opacity-80">Data Elements</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Feature Navigation */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-center mb-8 text-gray-800">
+              Experience the Power of Merkury Consumer 360
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {features.map((feature) => (
+                <button
+                  key={feature.id}
+                  onClick={() => setActiveFeature(feature.id)}
+                  className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+                    activeFeature === feature.id
+                      ? 'border-orange-500 bg-orange-50'
+                      : 'border-gray-200 bg-white hover:border-gray-300'
+                  }`}
+                  style={{
+                    borderColor: activeFeature === feature.id ? merkleColors.primary : undefined,
+                    backgroundColor: activeFeature === feature.id ? `${merkleColors.primary}10` : undefined
+                  }}
+                >
+                  <feature.icon 
+                    className="w-8 h-8 mx-auto mb-2"
+                    style={{ color: activeFeature === feature.id ? merkleColors.primary : '#6B7280' }}
+                  />
+                  <p className={`text-sm font-medium ${
+                    activeFeature === feature.id ? 'text-gray-900' : 'text-gray-600'
+                  }`}>
+                    {feature.title}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Feature Content */}
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            {renderFeatureContent()}
+          </div>
+
+          {/* Bottom CTA */}
+          <div className="mt-12 text-center bg-gray-100 rounded-xl p-8">
+            <h3 className="text-2xl font-bold mb-4 text-gray-800">
+              Ready to Power Your Experience Economy?
+            </h3>
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+              Join leading brands that trust Merkury Consumer 360 to transform their customer data 
+              into competitive advantage. Let's create exceptional experiences together.
+            </p>
+            <button 
+              className="px-8 py-3 rounded-lg font-semibold text-white transition-all duration-200 hover:shadow-lg transform hover:scale-105"
+              style={{ backgroundColor: merkleColors.primary }}
+            >
+              Schedule a Personalized Demo
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-8 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm opacity-80">© 2025 Merkle. A dentsu company.</p>
+              <p className="text-sm opacity-60 mt-1">We Power the Experience Economy™</p>
+            </div>
+            <div className="flex items-center gap-6 text-sm">
+              <a href="#" className="hover:opacity-80 transition-opacity">Privacy</a>
+              <a href="#" className="hover:opacity-80 transition-opacity">Terms</a>
+              <a href="#" className="hover:opacity-80 transition-opacity">Contact</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default MerkuryC360Demo;
